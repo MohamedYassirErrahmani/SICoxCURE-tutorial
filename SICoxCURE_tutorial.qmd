@@ -643,7 +643,7 @@ the package and the original article:
 ```bibtex
 @Manual{SICoxCURE2026,
   title  = {{SICoxCURE}: Single-Index/Cox Mixture Cure Model},
-  author = {Errahmani, {Mohamed Yassir} and Amico, {Ma{\"{i}}lis}},
+  author = {Errahmani, {Mohamed Yassir} and Amico, {Maïlis}},
   year   = {2026},
   note   = {R package version 0.1.2},
   url    = {https://github.com/MohamedYassirErrahmani/SICoxCURE}
@@ -658,7 +658,7 @@ the package and the original article:
 ```bibtex
 @Article{amico2019,
   title   = {The single-index/{C}ox mixture cure model},
-  author  = {Amico, {Ma{\"{i}}lis} and
+  author  = {Amico, {Maïlis} and
              Van Keilegom, Ingrid and
              Legrand, Catherine},
   journal = {Biometrics},
