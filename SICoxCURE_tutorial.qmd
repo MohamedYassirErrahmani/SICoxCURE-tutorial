@@ -27,6 +27,7 @@ format:
     fig-height: 5
     embed-resources: true
     smooth-scroll: true
+    favicon: "favicon.svg"
     page-layout: article
     grid:
       sidebar-width: 220px
