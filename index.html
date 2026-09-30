@@ -8,7 +8,7 @@
 
 <meta name="author" content="Mohamed Yassir Errahmani">
 <meta name="author" content="Maïlis Amico">
-<meta name="dcterms.date" content="2026-09-18">
+<meta name="dcterms.date" content="2026-09-30">
 
 <title>SICoxCURE: Single-Index/Cox Mixture Cure Model</title>
 <style>
@@ -2412,22 +2412,28 @@ window.Quarto = {
   <li><a href="#components-of-pred" id="toc-components-of-pred" class="nav-link" data-scroll-target="#components-of-pred"><span class="header-section-number">8.1</span> Components of <code>pred</code></a></li>
   </ul></li>
   <li><a href="#veridex" id="toc-veridex" class="nav-link" data-scroll-target="#veridex"><span class="header-section-number">9</span> Real Data Example: VERIDEX</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips"><span class="header-section-number">10</span> Tips and Recommendations</a>
+  <li><a href="#constraints" id="toc-constraints" class="nav-link" data-scroll-target="#constraints"><span class="header-section-number">10</span> Identifiability Constraints</a>
   <ul class="collapse">
-  <li><a href="#bandwidth-selection" id="toc-bandwidth-selection" class="nav-link" data-scroll-target="#bandwidth-selection"><span class="header-section-number">10.1</span> Bandwidth selection</a></li>
-  <li><a href="#bootstrap-recommendations" id="toc-bootstrap-recommendations" class="nav-link" data-scroll-target="#bootstrap-recommendations"><span class="header-section-number">10.2</span> Bootstrap recommendations</a></li>
+  <li><a href="#constraint-gamma1-default" id="toc-constraint-gamma1-default" class="nav-link" data-scroll-target="#constraint-gamma1-default"><span class="header-section-number">10.1</span> <code>constraint = &quot;gamma1&quot;</code> (default)</a></li>
+  <li><a href="#constraint-norm1" id="toc-constraint-norm1" class="nav-link" data-scroll-target="#constraint-norm1"><span class="header-section-number">10.2</span> <code>constraint = &quot;norm1&quot;</code></a></li>
+  <li><a href="#are-the-two-constraints-equivalent" id="toc-are-the-two-constraints-equivalent" class="nav-link" data-scroll-target="#are-the-two-constraints-equivalent"><span class="header-section-number">10.3</span> Are the two constraints equivalent?</a></li>
   </ul></li>
-  <li><a href="#reference" id="toc-reference" class="nav-link" data-scroll-target="#reference"><span class="header-section-number">11</span> Function Reference</a>
+  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips"><span class="header-section-number">11</span> Tips and Recommendations</a>
   <ul class="collapse">
-  <li><a href="#public-functions" id="toc-public-functions" class="nav-link" data-scroll-target="#public-functions"><span class="header-section-number">11.1</span> Public functions</a></li>
-  <li><a href="#internal-functions" id="toc-internal-functions" class="nav-link" data-scroll-target="#internal-functions"><span class="header-section-number">11.2</span> Internal functions</a></li>
+  <li><a href="#bandwidth-selection" id="toc-bandwidth-selection" class="nav-link" data-scroll-target="#bandwidth-selection"><span class="header-section-number">11.1</span> Bandwidth selection</a></li>
+  <li><a href="#bootstrap-recommendations" id="toc-bootstrap-recommendations" class="nav-link" data-scroll-target="#bootstrap-recommendations"><span class="header-section-number">11.2</span> Bootstrap recommendations</a></li>
   </ul></li>
-  <li><a href="#citation" id="toc-citation" class="nav-link" data-scroll-target="#citation"><span class="header-section-number">12</span> Citation</a>
+  <li><a href="#reference" id="toc-reference" class="nav-link" data-scroll-target="#reference"><span class="header-section-number">12</span> Function Reference</a>
   <ul class="collapse">
-  <li><a href="#cite-the-package" id="toc-cite-the-package" class="nav-link" data-scroll-target="#cite-the-package"><span class="header-section-number">12.1</span> Cite the package</a></li>
-  <li><a href="#cite-the-article" id="toc-cite-the-article" class="nav-link" data-scroll-target="#cite-the-article"><span class="header-section-number">12.2</span> Cite the article</a></li>
+  <li><a href="#public-functions" id="toc-public-functions" class="nav-link" data-scroll-target="#public-functions"><span class="header-section-number">12.1</span> Public functions</a></li>
+  <li><a href="#internal-functions" id="toc-internal-functions" class="nav-link" data-scroll-target="#internal-functions"><span class="header-section-number">12.2</span> Internal functions</a></li>
   </ul></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">13</span> References</a></li>
+  <li><a href="#citation" id="toc-citation" class="nav-link" data-scroll-target="#citation"><span class="header-section-number">13</span> Citation</a>
+  <ul class="collapse">
+  <li><a href="#cite-the-package" id="toc-cite-the-package" class="nav-link" data-scroll-target="#cite-the-package"><span class="header-section-number">13.1</span> Cite the package</a></li>
+  <li><a href="#cite-the-article" id="toc-cite-the-article" class="nav-link" data-scroll-target="#cite-the-article"><span class="header-section-number">13.2</span> Cite the article</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">14</span> References</a></li>
   </ul>
 </nav>
 </div>
@@ -2470,7 +2476,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 18, 2026</p>
+      <p class="date">September 30, 2026</p>
     </div>
   </div>
   
@@ -2559,7 +2565,8 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 <section id="from-github-development-version" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="from-github-development-version"><span class="header-section-number">2.2</span> From GitHub (development version)</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;)</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;MohamedYassirErrahmani/SICoxCURE&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Always get the latest version</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;MohamedYassirErrahmani/SICoxCURE&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="load-and-check" class="level3" data-number="2.3">
 <h3 data-number="2.3" class="anchored" data-anchor-id="load-and-check"><span class="header-section-number">2.3</span> Load and check</h3>
@@ -2567,7 +2574,7 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check version</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">&quot;SICoxCURE&quot;</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &#39;0.1.2&#39;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &#39;0.1.4&#39;</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># List available functions</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>(<span class="st">&quot;package:SICoxCURE&quot;</span>)</span>
@@ -2685,6 +2692,11 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 <section id="parameters" class="level3" data-number="4.1">
 <h3 data-number="4.1" class="anchored" data-anchor-id="parameters"><span class="header-section-number">4.1</span> Parameters</h3>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 27%">
+<col style="width: 39%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Parameter</th>
@@ -2694,9 +2706,19 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 </thead>
 <tbody>
 <tr class="odd">
+<td><code>formula</code></td>
+<td><code>NULL</code></td>
+<td>Formula: <code>Surv(time, status) ~ X1+X2 \| Z1</code></td>
+</tr>
+<tr class="even">
+<td><code>data</code></td>
+<td><code>NULL</code></td>
+<td>data.frame when using formula interface</td>
+</tr>
+<tr class="odd">
 <td><code>Y</code>, <code>delta</code>, <code>X</code>, <code>Z</code></td>
-<td>—</td>
-<td>Required inputs</td>
+<td><code>NULL</code></td>
+<td>Alternative to formula interface</td>
 </tr>
 <tr class="even">
 <td><code>kernel</code></td>
@@ -2730,8 +2752,8 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 </tr>
 <tr class="even">
 <td><code>standardize_X</code></td>
-<td><code>TRUE</code></td>
-<td>Standardize X (recommended)</td>
+<td><code>FALSE</code></td>
+<td>Standardize X before fitting</td>
 </tr>
 <tr class="odd">
 <td><code>bootstrap</code></td>
@@ -2749,11 +2771,16 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 <td>Seed for reproducibility</td>
 </tr>
 <tr class="even">
+<td><code>max_iter_boot</code></td>
+<td><code>NULL</code></td>
+<td>Max EM iterations per bootstrap fit. Reduce to <code>20L</code> for <code>norm1</code> to speed up.</td>
+</tr>
+<tr class="odd">
 <td><code>plot</code></td>
 <td><code>FALSE</code></td>
 <td>Auto-plot after fitting</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>verbose</code></td>
 <td><code>1L</code></td>
 <td>0=silent, 1=progress, 2=detail</td>
@@ -2803,28 +2830,33 @@ Done. 250/250 iterations succeeded.</code></pre>
 </section>
 <section id="workflow-b-step-by-step" class="level3" data-number="4.3">
 <h3 data-number="4.3" class="anchored" data-anchor-id="workflow-b-step-by-step"><span class="header-section-number">4.3</span> Workflow B: Step by Step</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Fit</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Fit (classic or formula interface)</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">h_step =</span> <span class="fl">0.05</span>, <span class="at">verbose =</span> <span class="dv">1</span>L)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Bootstrap SE</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">250</span>L,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">seed =</span> <span class="dv">42</span>L)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Summary with p-values</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">se =</span> se)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Plots</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_link</span>(fit)</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_survival</span>(fit,</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">newZ         =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>              <span class="at">group_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>))</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Predict on new data</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit,</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>                <span class="at">newX =</span> X[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ],</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>                <span class="at">newZ =</span> Z[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, , <span class="at">drop=</span><span class="cn">FALSE</span>],</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>                <span class="at">type =</span> <span class="st">&quot;all&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Or with formula interface</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(survival<span class="sc">::</span><span class="fu">Surv</span>(Y, delta) <span class="sc">~</span> X1<span class="sc">+</span>X2<span class="sc">+</span>X3<span class="sc">+</span>X4 <span class="sc">|</span> Z,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">data   =</span> dat,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">h_step =</span> <span class="fl">0.05</span>, <span class="at">verbose =</span> <span class="dv">1</span>L)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Bootstrap SE</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">250</span>L,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">seed =</span> <span class="dv">42</span>L)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Summary with p-values</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">se =</span> se)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Plots</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_link</span>(fit)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_survival</span>(fit,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>              <span class="at">newZ         =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>              <span class="at">group_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>))</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Predict on new data</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>                <span class="at">newX =</span> X[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ],</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                <span class="at">newZ =</span> Z[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, , <span class="at">drop=</span><span class="cn">FALSE</span>],</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>                <span class="at">type =</span> <span class="st">&quot;all&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
@@ -3159,10 +3191,100 @@ Use summary(fit, se = &lt;this object&gt;) for p-values.</code></pre>
 ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 <hr>
 </section>
-<section id="tips" class="level2" data-number="10">
-<h2 data-number="10" class="anchored" data-anchor-id="tips"><span class="header-section-number">10</span> Tips and Recommendations</h2>
-<section id="bandwidth-selection" class="level3" data-number="10.1">
-<h3 data-number="10.1" class="anchored" data-anchor-id="bandwidth-selection"><span class="header-section-number">10.1</span> Bandwidth selection</h3>
+<section id="constraints" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="constraints"><span class="header-section-number">10</span> Identifiability Constraints</h2>
+<p>The single-index model requires an identifiability constraint on <span class="math inline">\(\boldsymbol{\gamma}\)</span> to ensure uniqueness of the solution. Two options are available:</p>
+<section id="constraint-gamma1-default" class="level3" data-number="10.1">
+<h3 data-number="10.1" class="anchored" data-anchor-id="constraint-gamma1-default"><span class="header-section-number">10.1</span> <code>constraint = &quot;gamma1&quot;</code> (default)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">constraint =</span> <span class="st">&quot;gamma1&quot;</span>)  <span class="co"># default</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Fixes <span class="math inline">\(\gamma_1 = 1\)</span> (or <span class="math inline">\(-1\)</span> depending on the sign). The remaining components <span class="math inline">\(\gamma_2, \ldots, \gamma_d\)</span> are estimated freely.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Recommended for most users
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Fast, stable, and used by default. Bootstrap with <span class="math inline">\(B = 250\)</span> takes approximately <strong>2–3 minutes</strong> with <code>parallel = TRUE</code>.</p>
+</div>
+</div>
+</section>
+<section id="constraint-norm1" class="level3" data-number="10.2">
+<h3 data-number="10.2" class="anchored" data-anchor-id="constraint-norm1"><span class="header-section-number">10.2</span> <code>constraint = &quot;norm1&quot;</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">constraint    =</span> <span class="st">&quot;norm1&quot;</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">max_iter_boot =</span> <span class="dv">20</span>L)   <span class="co"># important !</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Constrains <span class="math inline">\(\|\boldsymbol{\gamma}\| = 1\)</span> (Euclidean norm). All components of <span class="math inline">\(\boldsymbol{\gamma}\)</span> are estimated, using a reparametrization <span class="math inline">\(\boldsymbol{\theta} \to \boldsymbol{\gamma}\)</span> that satisfies the constraint automatically during optimization.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Important: use <code>max_iter_boot</code> with <code>norm1</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>norm1</code> requires more EM iterations (~32 vs ~10 for <code>gamma1</code>), making bootstrap significantly slower. Always set <code>max_iter_boot = 20L</code> to limit iterations per bootstrap fit:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Integrated bootstrap</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">constraint    =</span> <span class="st">&quot;norm1&quot;</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">bootstrap     =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">B             =</span> <span class="dv">250</span>L,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">boot_parallel =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">max_iter_boot =</span> <span class="dv">20</span>L)   <span class="co"># &lt;- essential ✅</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Or separate bootstrap</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit,</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">B             =</span> <span class="dv">250</span>L,</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel      =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">max_iter_boot =</span> <span class="dv">20</span>L)   <span class="co"># &lt;- essential ✅</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Expected computation times (B = 30, parallel = TRUE, n = 250):</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Constraint</th>
+<th>Estimation</th>
+<th>Bootstrap</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gamma1</code></td>
+<td>~2 sec</td>
+<td>~16 sec</td>
+<td><strong>~18 sec</strong></td>
+</tr>
+<tr class="even">
+<td><code>norm1</code></td>
+<td>~25 sec</td>
+<td>~77 sec</td>
+<td><strong>~102 sec</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="are-the-two-constraints-equivalent" class="level3" data-number="10.3">
+<h3 data-number="10.3" class="anchored" data-anchor-id="are-the-two-constraints-equivalent"><span class="header-section-number">10.3</span> Are the two constraints equivalent?</h3>
+<p>Yes! Both identify the <strong>same model</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify equivalence</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fit_gamma1<span class="sc">$</span>p_hat, fit_norm1<span class="sc">$</span>p_hat)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; ~0.975  (very close to 1) ✅</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The estimated <span class="math inline">\(\hat{g}\)</span> functions differ (different index scales), but the predicted uncure probabilities <span class="math inline">\(\hat{p}(\mathbf{x})\)</span> are nearly identical.</p>
+<hr>
+</section>
+</section>
+<section id="tips" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="tips"><span class="header-section-number">11</span> Tips and Recommendations</h2>
+<section id="bandwidth-selection" class="level3" data-number="11.1">
+<h3 data-number="11.1" class="anchored" data-anchor-id="bandwidth-selection"><span class="header-section-number">11.1</span> Bandwidth selection</h3>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3176,27 +3298,27 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 <p>If <span class="math inline">\(h_{\mathrm{CV}} = h_{\min}\)</span> or <span class="math inline">\(h_{\mathrm{CV}} = h_{\max}\)</span>, the true optimum may lie outside the search interval. Extend <code>h_range</code> accordingly.</p>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick exploration (13 values)</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>fit_fast  <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">h_step =</span> <span class="fl">0.05</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Publication quality (601 values)</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>fit_final <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">h_step =</span> <span class="fl">0.001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick exploration (13 values)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fit_fast  <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">h_step =</span> <span class="fl">0.05</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Publication quality (601 values)</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>fit_final <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">h_step =</span> <span class="fl">0.001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="bootstrap-recommendations" class="level3" data-number="10.2">
-<h3 data-number="10.2" class="anchored" data-anchor-id="bootstrap-recommendations"><span class="header-section-number">10.2</span> Bootstrap recommendations</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exploration</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>se_quick <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">30</span>L, <span class="at">parallel =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Publication quality</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>se_final <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">250</span>L,</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">seed =</span> <span class="dv">42</span>L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="bootstrap-recommendations" class="level3" data-number="11.2">
+<h3 data-number="11.2" class="anchored" data-anchor-id="bootstrap-recommendations"><span class="header-section-number">11.2</span> Bootstrap recommendations</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exploration</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>se_quick <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">30</span>L, <span class="at">parallel =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Publication quality</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>se_final <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">250</span>L,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">seed =</span> <span class="dv">42</span>L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
-<section id="reference" class="level2" data-number="11">
-<h2 data-number="11" class="anchored" data-anchor-id="reference"><span class="header-section-number">11</span> Function Reference</h2>
-<section id="public-functions" class="level3" data-number="11.1">
-<h3 data-number="11.1" class="anchored" data-anchor-id="public-functions"><span class="header-section-number">11.1</span> Public functions</h3>
+<section id="reference" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="reference"><span class="header-section-number">12</span> Function Reference</h2>
+<section id="public-functions" class="level3" data-number="12.1">
+<h3 data-number="12.1" class="anchored" data-anchor-id="public-functions"><span class="header-section-number">12.1</span> Public functions</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 43%">
@@ -3244,8 +3366,8 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 </tbody>
 </table>
 </section>
-<section id="internal-functions" class="level3" data-number="11.2">
-<h3 data-number="11.2" class="anchored" data-anchor-id="internal-functions"><span class="header-section-number">11.2</span> Internal functions</h3>
+<section id="internal-functions" class="level3" data-number="12.2">
+<h3 data-number="12.2" class="anchored" data-anchor-id="internal-functions"><span class="header-section-number">12.2</span> Internal functions</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 27%">
@@ -3300,11 +3422,11 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 <hr>
 </section>
 </section>
-<section id="citation" class="level2" data-number="12">
-<h2 data-number="12" class="anchored" data-anchor-id="citation"><span class="header-section-number">12</span> Citation</h2>
+<section id="citation" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="citation"><span class="header-section-number">13</span> Citation</h2>
 <p>If you use <strong>SICoxCURE</strong> in your research, please cite both the package and the original article:</p>
-<section id="cite-the-package" class="level3" data-number="12.1">
-<h3 data-number="12.1" class="anchored" data-anchor-id="cite-the-package"><span class="header-section-number">12.1</span> Cite the package</h3>
+<section id="cite-the-package" class="level3" data-number="13.1">
+<h3 data-number="13.1" class="anchored" data-anchor-id="cite-the-package"><span class="header-section-number">13.1</span> Cite the package</h3>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3315,18 +3437,18 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bibtex code-with-copy"><code class="sourceCode bibtex"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">SICoxCURE2026</span>,</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span>  = {{SICoxCURE}: Single-Index/Cox Mixture Cure Model},</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">author</span> = {Errahmani, Mohamed Yassir and Amico, Maïlis},</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">year</span>   = {2026},</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">note</span>   = {R package version 0.1.2},</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">url</span>    = {https://github.com/MohamedYassirErrahmani/SICoxCURE}</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bibtex code-with-copy"><code class="sourceCode bibtex"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">SICoxCURE2026</span>,</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span>  = {{SICoxCURE}: Single-Index/Cox Mixture Cure Model},</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">author</span> = {Errahmani, Mohamed Yassir and Amico, Maïlis},</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">year</span>   = {2026},</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">note</span>   = {R package version 0.1.4},</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">url</span>    = {https://github.com/MohamedYassirErrahmani/SICoxCURE}</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
-<section id="cite-the-article" class="level3" data-number="12.2">
-<h3 data-number="12.2" class="anchored" data-anchor-id="cite-the-article"><span class="header-section-number">12.2</span> Cite the article</h3>
+<section id="cite-the-article" class="level3" data-number="13.2">
+<h3 data-number="13.2" class="anchored" data-anchor-id="cite-the-article"><span class="header-section-number">13.2</span> Cite the article</h3>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3337,25 +3459,25 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bibtex code-with-copy"><code class="sourceCode bibtex"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">amico2019</span>,</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span>   = {The single-index/{C}ox mixture cure model},</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">author</span>  = {Amico, Maïlis and</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>             Van Keilegom, Ingrid and</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>             Legrand, Catherine},</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">journal</span> = {Biometrics},</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">year</span>    = {2019},</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">volume</span>  = {75},</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">number</span>  = {2},</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">pages</span>   = {452--462},</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">doi</span>     = {10.1111/biom.12999}</span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bibtex code-with-copy"><code class="sourceCode bibtex"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">amico2019</span>,</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span>   = {The single-index/{C}ox mixture cure model},</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">author</span>  = {Amico, Maïlis and</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>             Van Keilegom, Ingrid and</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>             Legrand, Catherine},</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">journal</span> = {Biometrics},</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">year</span>    = {2019},</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">volume</span>  = {75},</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">number</span>  = {2},</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">pages</span>   = {452--462},</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">doi</span>     = {10.1111/biom.12999}</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <hr>
 </section>
 </section>
-<section id="references" class="level2" data-number="13">
-<h2 data-number="13" class="anchored" data-anchor-id="references"><span class="header-section-number">13</span> References</h2>
+<section id="references" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="references"><span class="header-section-number">14</span> References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-amico2019" class="csl-entry" role="listitem">
 Amico, M., Van Keilegom, I. and Legrand, C. (2019) <a href="https://doi.org/10.1111/biom.12999">The single-index/<span>C</span>ox mixture cure model</a>. <em>Biometrics</em>, <strong>75</strong>, 452–462.

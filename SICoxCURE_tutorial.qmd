@@ -117,6 +117,7 @@ install.packages("SICoxCURE")
 
 ```r
 # install.packages("devtools")
+# Always get the latest version
 devtools::install_github("MohamedYassirErrahmani/SICoxCURE")
 ```
 
@@ -127,7 +128,7 @@ library(SICoxCURE)
 
 # Check version
 packageVersion("SICoxCURE")
-#> [1] '0.1.2'
+#> [1] '0.1.4'
 
 # List available functions
 ls("package:SICoxCURE")
@@ -215,17 +216,20 @@ fit <- sic_fit(
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `Y`, `delta`, `X`, `Z` | --- | Required inputs |
+| `formula` | `NULL` | Formula: `Surv(time, status) ~ X1+X2 \| Z1` |
+| `data` | `NULL` | data.frame when using formula interface |
+| `Y`, `delta`, `X`, `Z` | `NULL` | Alternative to formula interface |
 | `kernel` | `"epanechnikov"` | Kernel function |
 | `h_range` | `c(0.4, 1.0)` | Bandwidth search interval |
 | `h_step` | `0.001` | Grid step (601 values for fine accuracy) |
 | `constraint` | `"gamma1"` | Fix $\gamma_1 = 1$ |
 | `tol` | `1e-5` | EM convergence tolerance |
 | `max_iter` | `500L` | Maximum EM iterations |
-| `standardize_X` | `TRUE` | Standardize X (recommended) |
+| `standardize_X` | `FALSE` | Standardize X before fitting |
 | `bootstrap` | `FALSE` | Compute SE automatically |
 | `B` | `250L` | Bootstrap samples |
 | `boot_seed` | `NULL` | Seed for reproducibility |
+| `max_iter_boot` | `NULL` | Max EM iterations per bootstrap fit. Reduce to `20L` for `norm1` to speed up. |
 | `plot` | `FALSE` | Auto-plot after fitting |
 | `verbose` | `1L` | 0=silent, 1=progress, 2=detail |
 
@@ -278,8 +282,13 @@ Done. 250/250 iterations succeeded.
 ### Workflow B: Step by Step
 
 ```r
-# Step 1: Fit
+# Step 1: Fit (classic or formula interface)
 fit <- sic_fit(Y, delta, X, Z,
+               h_step = 0.05, verbose = 1L)
+
+# Or with formula interface
+fit <- sic_fit(survival::Surv(Y, delta) ~ X1+X2+X3+X4 | Z,
+               data   = dat,
                h_step = 0.05, verbose = 1L)
 
 # Step 2: Bootstrap SE
@@ -570,6 +579,89 @@ ER_bin     -0.9279    0.2753  -3.370  <0.001 ***
 
 ---
 
+## Identifiability Constraints {#constraints}
+
+The single-index model requires an identifiability constraint on
+$\boldsymbol{\gamma}$ to ensure uniqueness of the solution.
+Two options are available:
+
+### `constraint = "gamma1"` (default)
+
+```r
+fit <- sic_fit(Y, delta, X, Z,
+               constraint = "gamma1")  # default
+```
+
+Fixes $\gamma_1 = 1$ (or $-1$ depending on the sign).
+The remaining components $\gamma_2, \ldots, \gamma_d$ are
+estimated freely.
+
+::: {.callout-tip}
+## Recommended for most users
+Fast, stable, and used by default. Bootstrap with $B = 250$
+takes approximately **2--3 minutes** with `parallel = TRUE`.
+:::
+
+### `constraint = "norm1"`
+
+```r
+fit <- sic_fit(Y, delta, X, Z,
+               constraint    = "norm1",
+               max_iter_boot = 20L)   # important !
+```
+
+Constrains $\|\boldsymbol{\gamma}\| = 1$ (Euclidean norm).
+All components of $\boldsymbol{\gamma}$ are estimated, using
+a reparametrization $\boldsymbol{\theta} \to \boldsymbol{\gamma}$
+that satisfies the constraint automatically during optimization.
+
+::: {.callout-warning}
+## Important: use `max_iter_boot` with `norm1`
+`norm1` requires more EM iterations (~32 vs ~10 for `gamma1`),
+making bootstrap significantly slower. Always set
+`max_iter_boot = 20L` to limit iterations per bootstrap fit:
+
+```r
+# Integrated bootstrap
+fit <- sic_fit(Y, delta, X, Z,
+               constraint    = "norm1",
+               bootstrap     = TRUE,
+               B             = 250L,
+               boot_parallel = TRUE,
+               max_iter_boot = 20L)   # <- essential ✅
+
+# Or separate bootstrap
+se <- bootstrap_se(fit,
+                   B             = 250L,
+                   parallel      = TRUE,
+                   max_iter_boot = 20L)   # <- essential ✅
+```
+
+**Expected computation times (B = 30, parallel = TRUE, n = 250):**
+
+| Constraint | Estimation | Bootstrap | Total |
+|------------|-----------|-----------|-------|
+| `gamma1` | ~2 sec | ~16 sec | **~18 sec** |
+| `norm1` | ~25 sec | ~77 sec | **~102 sec** |
+
+:::
+
+### Are the two constraints equivalent?
+
+Yes! Both identify the **same model**:
+
+```r
+# Verify equivalence
+cor(fit_gamma1$p_hat, fit_norm1$p_hat)
+# -> ~0.975  (very close to 1) ✅
+```
+
+The estimated $\hat{g}$ functions differ (different index scales),
+but the predicted uncure probabilities $\hat{p}(\mathbf{x})$
+are nearly identical.
+
+---
+
 ## Tips and Recommendations {#tips}
 
 ### Bandwidth selection
@@ -646,7 +738,7 @@ the package and the original article:
   title  = {{SICoxCURE}: Single-Index/Cox Mixture Cure Model},
   author = {Errahmani, Mohamed Yassir and Amico, Maïlis},
   year   = {2026},
-  note   = {R package version 0.1.2},
+  note   = {R package version 0.1.4},
   url    = {https://github.com/MohamedYassirErrahmani/SICoxCURE}
 }
 ```
