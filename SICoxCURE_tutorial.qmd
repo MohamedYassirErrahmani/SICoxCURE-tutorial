@@ -583,7 +583,16 @@ ER_bin     -0.9279    0.2753  -3.370  <0.001 ***
 
 The single-index model requires an identifiability constraint on
 $\boldsymbol{\gamma}$ to ensure uniqueness of the solution.
-Two options are available:
+Two options are available.
+
+::: {.callout-note}
+## Why a constraint is needed
+The single-index $\boldsymbol{x}^{\top}\boldsymbol{\gamma}$ is
+invariant to any positive rescaling of $\boldsymbol{\gamma}$:
+$c\,\boldsymbol{\gamma}$ gives the same index values as
+$\boldsymbol{\gamma}$ (after absorbing $c$ into $g$). A
+constraint pins the scale, making the solution unique.
+:::
 
 ### `constraint = "gamma1"` (default)
 
@@ -592,13 +601,15 @@ fit <- sic_fit(Y, delta, X, Z,
                constraint = "gamma1")  # default
 ```
 
-Fixes $\gamma_1 = 1$ (or $-1$ depending on the sign).
-The remaining components $\gamma_2, \ldots, \gamma_d$ are
-estimated freely.
+Fixes $\gamma_1 = 1$ (the first component is set to 1 or $-1$
+depending on the sign of the unconstrained estimate).
+The remaining $d - 1$ components are estimated freely via
+**BFGS** optimization.
 
 ::: {.callout-tip}
 ## Recommended for most users
-Fast, stable, and used by default. Bootstrap with $B = 250$
+Fast, stable, and used by default. BFGS converges in ~10 EM
+iterations on the VERIDEX data. Bootstrap with $B = 250$
 takes approximately **2--3 minutes** with `parallel = TRUE`.
 :::
 
@@ -606,20 +617,27 @@ takes approximately **2--3 minutes** with `parallel = TRUE`.
 
 ```r
 fit <- sic_fit(Y, delta, X, Z,
-               constraint    = "norm1",
-               max_iter_boot = 20L)   # important !
+               constraint = "norm1")
 ```
 
-Constrains $\|\boldsymbol{\gamma}\| = 1$ (Euclidean norm).
-All components of $\boldsymbol{\gamma}$ are estimated, using
-a reparametrization $\boldsymbol{\theta} \to \boldsymbol{\gamma}$
-that satisfies the constraint automatically during optimization.
+Constrains $\|\boldsymbol{\gamma}\|_2 = 1$ (unit Euclidean
+norm), as used in Amico, Van Keilegom & Legrand (2019).
+All $d$ components are estimated simultaneously via
+**SLSQP** (sequential least-squares quadratic programming,
+implemented in **nloptr**) with convergence tolerances
+`xtol_rel = ftol_rel = 1e-8`.
+
+The optimizer works on the full $\boldsymbol{\gamma}$ vector
+subject to the norm-1 equality constraint, rather than
+reparametrizing it. This is more faithful to the original
+formulation but requires more EM iterations (~32 vs ~10 for
+`gamma1`) and is therefore slower.
 
 ::: {.callout-warning}
-## Important: use `max_iter_boot` with `norm1`
-`norm1` requires more EM iterations (~32 vs ~10 for `gamma1`),
-making bootstrap significantly slower. Always set
-`max_iter_boot = 20L` to limit iterations per bootstrap fit:
+## Important: `max_iter_boot` is essential with `norm1`
+Because each bootstrap refit needs ~32 EM iterations instead
+of ~10, bootstrap is **~5–6× slower** under `norm1`. Always
+cap iterations with `max_iter_boot = 20L`:
 
 ```r
 # Integrated bootstrap
@@ -630,17 +648,17 @@ fit <- sic_fit(Y, delta, X, Z,
                boot_parallel = TRUE,
                max_iter_boot = 20L)   # <- essential ✅
 
-# Or separate bootstrap
+# Or separate bootstrap after fitting
 se <- bootstrap_se(fit,
                    B             = 250L,
                    parallel      = TRUE,
                    max_iter_boot = 20L)   # <- essential ✅
 ```
 
-**Expected computation times (B = 30, parallel = TRUE, n = 250):**
+**Expected computation times (B = 30, `parallel = TRUE`, n = 250):**
 
-| Constraint | Estimation | Bootstrap | Total |
-|------------|-----------|-----------|-------|
+| Constraint | Estimation | Bootstrap (B = 30) | Total |
+|------------|-----------|-------------------|-------|
 | `gamma1` | ~2 sec | ~16 sec | **~18 sec** |
 | `norm1` | ~25 sec | ~77 sec | **~102 sec** |
 
@@ -648,17 +666,46 @@ se <- bootstrap_se(fit,
 
 ### Are the two constraints equivalent?
 
-Yes! Both identify the **same model**:
+Both constraints identify the **same underlying model**,
+but they do **not** produce numerically identical estimates
+because they optimize on different scales.
+
+**What differs:**
+
+- The optimal bandwidth $\hat{h}$ is chosen by cross-validation
+  on the respective index scale.
+  On the VERIDEX data: $\hat{h}_{\gamma_1} \approx 0.596$,
+  $\hat{h}_{\text{norm1}} \approx 0.400$.
+- The estimated link function $\hat{g}$ therefore differs
+  (different support and smoothing).
+- The predicted uncure probabilities $\hat{p}(\mathbf{x})$
+  are **very highly correlated** ($r \approx 0.97$) but not
+  identical (maximum absolute difference $\approx 0.30$ on
+  extreme observations).
 
 ```r
-# Verify equivalence
-cor(fit_gamma1$p_hat, fit_norm1$p_hat)
-# -> ~0.975  (very close to 1) ✅
+# Fit both constraints on the same data
+fit_g1   <- sic_fit(Y, delta, X, Z, constraint = "gamma1")
+fit_norm1 <- sic_fit(Y, delta, X, Z, constraint = "norm1")
+
+# Compare predicted cure probabilities
+cor(fit_g1$p_hat, fit_norm1$p_hat)
+# -> ~0.97  (very high, but not 1) ✅
+
+range(fit_g1$p_hat - fit_norm1$p_hat)
+# -> roughly [-0.30, 0.30]  (differ on extremes)
 ```
 
-The estimated $\hat{g}$ functions differ (different index scales),
-but the predicted uncure probabilities $\hat{p}(\mathbf{x})$
-are nearly identical.
+::: {.callout-note}
+## Which constraint to use?
+- **`gamma1`** (default): faster and numerically more stable;
+  recommended for exploratory analysis and publication unless
+  the article specifically requires $\|\boldsymbol{\gamma}\|=1$.
+- **`norm1`**: matches the constraint in
+  Amico, Van Keilegom & Legrand (2019, *Biometrics*) exactly;
+  use it for strict reproducibility of that paper's results.
+  Remember to set `max_iter_boot` when bootstrapping.
+:::
 
 ---
 
