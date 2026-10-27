@@ -8,7 +8,7 @@
 
 <meta name="author" content="Mohamed Yassir Errahmani">
 <meta name="author" content="Maïlis Amico">
-<meta name="dcterms.date" content="2026-10-13">
+<meta name="dcterms.date" content="2026-10-27">
 
 <title>SICoxCURE: Single-Index/Cox Mixture Cure Model</title>
 <style>
@@ -2385,9 +2385,10 @@ window.Quarto = {
   </ul></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">3</span> Data Preparation</a>
   <ul class="collapse">
-  <li><a href="#required-structure" id="toc-required-structure" class="nav-link" data-scroll-target="#required-structure"><span class="header-section-number">3.1</span> Required structure</a></li>
-  <li><a href="#how-to-organize-your-own-data" id="toc-how-to-organize-your-own-data" class="nav-link" data-scroll-target="#how-to-organize-your-own-data"><span class="header-section-number">3.2</span> How to organize your own data</a></li>
-  <li><a href="#using-a-data.frame" id="toc-using-a-data.frame" class="nav-link" data-scroll-target="#using-a-data.frame"><span class="header-section-number">3.3</span> Using a data.frame</a></li>
+  <li><a href="#sicure-data" id="toc-sicure-data" class="nav-link" data-scroll-target="#sicure-data"><span class="header-section-number">3.1</span> Built-in dataset: <code>sicure_data</code></a></li>
+  <li><a href="#required-structure" id="toc-required-structure" class="nav-link" data-scroll-target="#required-structure"><span class="header-section-number">3.2</span> Required structure</a></li>
+  <li><a href="#how-to-organize-your-own-data" id="toc-how-to-organize-your-own-data" class="nav-link" data-scroll-target="#how-to-organize-your-own-data"><span class="header-section-number">3.3</span> How to organize your own data</a></li>
+  <li><a href="#using-a-data.frame" id="toc-using-a-data.frame" class="nav-link" data-scroll-target="#using-a-data.frame"><span class="header-section-number">3.4</span> Using a data.frame</a></li>
   </ul></li>
   <li><a href="#fitting" id="toc-fitting" class="nav-link" data-scroll-target="#fitting"><span class="header-section-number">4</span> Fitting the Model: <code>sic_fit()</code></a>
   <ul class="collapse">
@@ -2414,8 +2415,8 @@ window.Quarto = {
   <li><a href="#veridex" id="toc-veridex" class="nav-link" data-scroll-target="#veridex"><span class="header-section-number">9</span> Real Data Example: VERIDEX</a></li>
   <li><a href="#constraints" id="toc-constraints" class="nav-link" data-scroll-target="#constraints"><span class="header-section-number">10</span> Identifiability Constraints</a>
   <ul class="collapse">
-  <li><a href="#constraint-gamma1-default" id="toc-constraint-gamma1-default" class="nav-link" data-scroll-target="#constraint-gamma1-default"><span class="header-section-number">10.1</span> <code>constraint = &quot;gamma1&quot;</code> (default)</a></li>
-  <li><a href="#constraint-norm1" id="toc-constraint-norm1" class="nav-link" data-scroll-target="#constraint-norm1"><span class="header-section-number">10.2</span> <code>constraint = &quot;norm1&quot;</code></a></li>
+  <li><a href="#constraint-gamma1" id="toc-constraint-gamma1" class="nav-link" data-scroll-target="#constraint-gamma1"><span class="header-section-number">10.1</span> <code>constraint = &quot;gamma1&quot;</code></a></li>
+  <li><a href="#constraint-norm1-default" id="toc-constraint-norm1-default" class="nav-link" data-scroll-target="#constraint-norm1-default"><span class="header-section-number">10.2</span> <code>constraint = &quot;norm1&quot;</code> (default)</a></li>
   <li><a href="#are-the-two-constraints-equivalent" id="toc-are-the-two-constraints-equivalent" class="nav-link" data-scroll-target="#are-the-two-constraints-equivalent"><span class="header-section-number">10.3</span> Are the two constraints equivalent?</a></li>
   </ul></li>
   <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips"><span class="header-section-number">11</span> Tips and Recommendations</a>
@@ -2476,7 +2477,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 13, 2026</p>
+      <p class="date">October 27, 2026</p>
     </div>
   </div>
   
@@ -2574,7 +2575,7 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check version</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">&quot;SICoxCURE&quot;</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &#39;0.1.4&#39;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &#39;0.1.0&#39;</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># List available functions</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>(<span class="st">&quot;package:SICoxCURE&quot;</span>)</span>
@@ -2589,8 +2590,49 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 </section>
 <section id="data" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="data"><span class="header-section-number">3</span> Data Preparation</h2>
-<section id="required-structure" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="required-structure"><span class="header-section-number">3.1</span> Required structure</h3>
+<section id="sicure-data" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="sicure-data"><span class="header-section-number">3.1</span> Built-in dataset: <code>sicure_data</code></h3>
+<p>The package includes a simulated dataset <code>sicure_data</code> (n = 300) that can be used to test and explore the package functions immediately after installation.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sicure_data)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sicure_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Dataset structure:</strong> 300 observations, 5 variables:</p>
+<ul>
+<li><code>FAILTIME</code>: observed follow-up time</li>
+<li><code>FAILCENS</code>: event indicator (1 = event, 0 = censored)</li>
+<li><code>TRT</code>: treatment indicator (0/1)</li>
+<li><code>SEX</code>: sex indicator (0/1)</li>
+<li><code>AGE</code>: age in years</li>
+</ul>
+<p>Generated from a SIC mixture cure model with <code>gamma = (0.8, -0.3, 0.015)</code>, <code>beta = -0.6</code>, event rate 23.3%, cure fraction ~18.7%, seed 2019.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick fit on built-in data</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fit_demo <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y             =</span> sicure_data<span class="sc">$</span>FAILTIME,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta         =</span> sicure_data<span class="sc">$</span>FAILCENS,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X             =</span> <span class="fu">as.matrix</span>(sicure_data[, <span class="fu">c</span>(<span class="st">&#39;TRT&#39;</span>,<span class="st">&#39;SEX&#39;</span>,<span class="st">&#39;AGE&#39;</span>)]),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z             =</span> <span class="fu">matrix</span>(sicure_data<span class="sc">$</span>TRT, <span class="at">ncol =</span> <span class="dv">1</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">standardize_X =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose       =</span> <span class="dv">1</span>L</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_demo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="required-structure" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="required-structure"><span class="header-section-number">3.2</span> Required structure</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 34%">
@@ -2628,30 +2670,30 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 </tbody>
 </table>
 </section>
-<section id="how-to-organize-your-own-data" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="how-to-organize-your-own-data"><span class="header-section-number">3.2</span> How to organize your own data</h3>
+<section id="how-to-organize-your-own-data" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="how-to-organize-your-own-data"><span class="header-section-number">3.3</span> How to organize your own data</h3>
 <p>Before fitting the model, prepare your data as follows:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load your data</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;your_data.csv&quot;</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove missing values</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(dat)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare vectors and matrices</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>Y     <span class="ot">&lt;-</span> dat<span class="sc">$</span>follow_up_time    <span class="co"># follow-up times</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> dat<span class="sc">$</span>event_indicator   <span class="co"># 1=event, 0=censored</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Incidence covariates (X)</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dat[, <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;ER_status&quot;</span>, <span class="st">&quot;tumor_size&quot;</span>)])</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Latency covariate (Z)</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dat[, <span class="st">&quot;ER_status&quot;</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>])</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Check</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;n=%d | Events=%.1f%% | Censored=%.1f%%</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            <span class="fu">nrow</span>(dat),</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(delta),</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>            <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(delta <span class="sc">==</span> <span class="dv">0</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load your data</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;your_data.csv&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove missing values</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(dat)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare vectors and matrices</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>Y     <span class="ot">&lt;-</span> dat<span class="sc">$</span>follow_up_time    <span class="co"># follow-up times</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> dat<span class="sc">$</span>event_indicator   <span class="co"># 1=event, 0=censored</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Incidence covariates (X)</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dat[, <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;ER_status&quot;</span>, <span class="st">&quot;tumor_size&quot;</span>)])</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Latency covariate (Z)</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dat[, <span class="st">&quot;ER_status&quot;</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>])</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Check</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;n=%d | Events=%.1f%% | Censored=%.1f%%</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            <span class="fu">nrow</span>(dat),</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>            <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(delta),</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>            <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(delta <span class="sc">==</span> <span class="dv">0</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2670,20 +2712,20 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 </div>
 </div>
 </section>
-<section id="using-a-data.frame" class="level3" data-number="3.3">
-<h3 data-number="3.3" class="anchored" data-anchor-id="using-a-data.frame"><span class="header-section-number">3.3</span> Using a data.frame</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Y=</span>Y, <span class="at">delta=</span>delta,</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">X1=</span>X[,<span class="dv">1</span>], <span class="at">X2=</span>X[,<span class="dv">2</span>],</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">X3=</span>X[,<span class="dv">3</span>], <span class="at">X4=</span>X[,<span class="dv">4</span>],</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">Z=</span>Z[,<span class="dv">1</span>])</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data      =</span> dat,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_Y     =</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_delta =</span> <span class="st">&quot;delta&quot;</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols_X    =</span> <span class="fu">c</span>(<span class="st">&quot;X1&quot;</span>,<span class="st">&quot;X2&quot;</span>,<span class="st">&quot;X3&quot;</span>,<span class="st">&quot;X4&quot;</span>),</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols_Z    =</span> <span class="st">&quot;Z&quot;</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="using-a-data.frame" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="using-a-data.frame"><span class="header-section-number">3.4</span> Using a data.frame</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Y=</span>Y, <span class="at">delta=</span>delta,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">X1=</span>X[,<span class="dv">1</span>], <span class="at">X2=</span>X[,<span class="dv">2</span>],</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">X3=</span>X[,<span class="dv">3</span>], <span class="at">X4=</span>X[,<span class="dv">4</span>],</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">Z=</span>Z[,<span class="dv">1</span>])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data      =</span> dat,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_Y     =</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_delta =</span> <span class="st">&quot;delta&quot;</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols_X    =</span> <span class="fu">c</span>(<span class="st">&quot;X1&quot;</span>,<span class="st">&quot;X2&quot;</span>,<span class="st">&quot;X3&quot;</span>,<span class="st">&quot;X4&quot;</span>),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols_Z    =</span> <span class="st">&quot;Z&quot;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
@@ -2727,7 +2769,7 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 </tr>
 <tr class="odd">
 <td><code>h_range</code></td>
-<td><code>c(0.4, 1.0)</code></td>
+<td><code>c(0.05, 5.0)</code></td>
 <td>Bandwidth search interval</td>
 </tr>
 <tr class="even">
@@ -2737,8 +2779,8 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 </tr>
 <tr class="odd">
 <td><code>constraint</code></td>
-<td><code>&quot;gamma1&quot;</code></td>
-<td>Fix <span class="math inline">\(\gamma_1 = 1\)</span></td>
+<td><code>&quot;norm1&quot;</code></td>
+<td>Constrain <span class="math inline">\(\|\boldsymbol{\gamma}\|_2 = 1\)</span></td>
 </tr>
 <tr class="even">
 <td><code>tol</code></td>
@@ -2790,32 +2832,32 @@ S(t \mid \mathbf{x}, \mathbf{z}) =
 </section>
 <section id="workflow-a-all-in-one-recommended" class="level3" data-number="4.2">
 <h3 data-number="4.2" class="anchored" data-anchor-id="workflow-a-all-in-one-recommended"><span class="header-section-number">4.2</span> Workflow A: All-in-One (Recommended)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SICoxCURE)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>X     <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">4</span>), n, <span class="dv">4</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>Z     <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rbinom</span>(n, <span class="dv">1</span>L, <span class="fl">0.6</span>), n, <span class="dv">1</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>p     <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>X <span class="sc">%*%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="sc">-</span><span class="fl">0.2</span>)))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>B     <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>L, p)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>T0    <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(B <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">rexp</span>(n, <span class="fl">0.5</span>), <span class="cn">Inf</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>C     <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n, <span class="fl">0.3</span>)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>Y     <span class="ot">&lt;-</span> <span class="fu">pmin</span>(T0, C)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(T0 <span class="sc">&lt;=</span> C <span class="sc">&amp;</span> T0 <span class="sc">&lt;</span> <span class="cn">Inf</span>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y           =</span> Y,</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta       =</span> delta,</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">X           =</span> X,</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z           =</span> Z,</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">h_step      =</span> <span class="fl">0.05</span>,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">bootstrap   =</span> <span class="cn">TRUE</span>,        <span class="co"># SE computed automatically</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">B           =</span> <span class="dv">250</span>L,        <span class="co"># B=250 </span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">boot_seed   =</span> <span class="dv">42</span>L,</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot        =</span> <span class="cn">TRUE</span>,        <span class="co"># auto-plot</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_Z      =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>),</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose     =</span> <span class="dv">1</span>L</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SICoxCURE)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>X     <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">4</span>), n, <span class="dv">4</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>Z     <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rbinom</span>(n, <span class="dv">1</span>L, <span class="fl">0.6</span>), n, <span class="dv">1</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>p     <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>X <span class="sc">%*%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="sc">-</span><span class="fl">0.2</span>)))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>B     <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>L, p)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>T0    <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(B <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">rexp</span>(n, <span class="fl">0.5</span>), <span class="cn">Inf</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>C     <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n, <span class="fl">0.3</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>Y     <span class="ot">&lt;-</span> <span class="fu">pmin</span>(T0, C)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(T0 <span class="sc">&lt;=</span> C <span class="sc">&amp;</span> T0 <span class="sc">&lt;</span> <span class="cn">Inf</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y           =</span> Y,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta       =</span> delta,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">X           =</span> X,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z           =</span> Z,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">h_step      =</span> <span class="fl">0.05</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">bootstrap   =</span> <span class="cn">TRUE</span>,        <span class="co"># SE computed automatically</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">B           =</span> <span class="dv">250</span>L,        <span class="co"># B=250 </span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">boot_seed   =</span> <span class="dv">42</span>L,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot        =</span> <span class="cn">TRUE</span>,        <span class="co"># auto-plot</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_Z      =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>),</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose     =</span> <span class="dv">1</span>L</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Console output:</strong></p>
 <pre><code>=== Fitting SIC Mixture Cure Model ===
 Step 1/3: Data validation...
@@ -2830,33 +2872,33 @@ Done. 250/250 iterations succeeded.</code></pre>
 </section>
 <section id="workflow-b-step-by-step" class="level3" data-number="4.3">
 <h3 data-number="4.3" class="anchored" data-anchor-id="workflow-b-step-by-step"><span class="header-section-number">4.3</span> Workflow B: Step by Step</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Fit (classic or formula interface)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">h_step =</span> <span class="fl">0.05</span>, <span class="at">verbose =</span> <span class="dv">1</span>L)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Or with formula interface</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(survival<span class="sc">::</span><span class="fu">Surv</span>(Y, delta) <span class="sc">~</span> X1<span class="sc">+</span>X2<span class="sc">+</span>X3<span class="sc">+</span>X4 <span class="sc">|</span> Z,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">data   =</span> dat,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">h_step =</span> <span class="fl">0.05</span>, <span class="at">verbose =</span> <span class="dv">1</span>L)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Bootstrap SE</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">250</span>L,</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">seed =</span> <span class="dv">42</span>L)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Summary with p-values</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">se =</span> se)</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Plots</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_link</span>(fit)</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_survival</span>(fit,</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>              <span class="at">newZ         =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>              <span class="at">group_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>))</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Predict on new data</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit,</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>                <span class="at">newX =</span> X[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ],</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                <span class="at">newZ =</span> Z[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, , <span class="at">drop=</span><span class="cn">FALSE</span>],</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>                <span class="at">type =</span> <span class="st">&quot;all&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Fit (classic or formula interface)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">h_step =</span> <span class="fl">0.05</span>, <span class="at">verbose =</span> <span class="dv">1</span>L)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Or with formula interface</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(survival<span class="sc">::</span><span class="fu">Surv</span>(Y, delta) <span class="sc">~</span> X1<span class="sc">+</span>X2<span class="sc">+</span>X3<span class="sc">+</span>X4 <span class="sc">|</span> Z,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">data   =</span> dat,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">h_step =</span> <span class="fl">0.05</span>, <span class="at">verbose =</span> <span class="dv">1</span>L)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Bootstrap SE</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">250</span>L,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">seed =</span> <span class="dv">42</span>L)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Summary with p-values</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">se =</span> se)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Plots</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_link</span>(fit)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_survival</span>(fit,</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>              <span class="at">newZ         =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>              <span class="at">group_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>))</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Predict on new data</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit,</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>                <span class="at">newX =</span> X[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ],</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>                <span class="at">newZ =</span> Z[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, , <span class="at">drop=</span><span class="cn">FALSE</span>],</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>                <span class="at">type =</span> <span class="st">&quot;all&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
@@ -2931,7 +2973,7 @@ Done. 250/250 iterations succeeded.</code></pre>
 </table>
 <section id="print-method" class="level3" data-number="5.1">
 <h3 data-number="5.1" class="anchored" data-anchor-id="print-method"><span class="header-section-number">5.1</span> <code>print()</code> method</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>=== SIC Mixture Cure Model ===
 
 n = 200 | events = 89 | kernel = epanechnikov | h = 0.5500
@@ -2949,7 +2991,7 @@ Use summary() for standard errors and p-values.</code></pre>
 </section>
 <section id="summary-method" class="level3" data-number="5.2">
 <h3 data-number="5.2" class="anchored" data-anchor-id="summary-method"><span class="header-section-number">5.2</span> <code>summary()</code> method</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)   <span class="co"># uses fit$se if bootstrap=TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)   <span class="co"># uses fit$se if bootstrap=TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>=== Summary: SIC Mixture Cure Model ===
 
 Data:
@@ -2958,7 +3000,7 @@ Data:
 
 Model:
   Kernel: epanechnikov | h = 0.5500
-  Constraint: &#39;gamma1&#39; | Standardized X: yes
+  Constraint: &#39;norm1&#39; | Standardized X: yes
 
 Convergence: YES in 8 iterations (crit = 3.21e-06)
 
@@ -2996,15 +3038,15 @@ Signif. codes: &#39;&lt;0.001&#39; &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&
 </section>
 <section id="bootstrap" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="bootstrap"><span class="header-section-number">6</span> Bootstrap Standard Errors</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">fit      =</span> fit,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">B        =</span> <span class="dv">250</span>L,      </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">parallel =</span> <span class="cn">TRUE</span>,      <span class="co"># use multiple CPU cores</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed     =</span> <span class="dv">42</span>L,       <span class="co"># reproducibility</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose  =</span> <span class="cn">TRUE</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(se)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">fit      =</span> fit,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">B        =</span> <span class="dv">250</span>L,      </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">parallel =</span> <span class="cn">TRUE</span>,      <span class="co"># use multiple CPU cores</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed     =</span> <span class="dv">42</span>L,       <span class="co"># reproducibility</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose  =</span> <span class="cn">TRUE</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(se)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>=== Bootstrap Standard Errors (SICoxCURE) ===
 
 Bootstrap samples : 250 / 250 succeeded
@@ -3037,44 +3079,44 @@ Use summary(fit, se = &lt;this object&gt;) for p-values.</code></pre>
 <h2 data-number="7" class="anchored" data-anchor-id="plots"><span class="header-section-number">7</span> Graphical Functions</h2>
 <section id="plot_link-estimated-link-function" class="level3" data-number="7.1">
 <h3 data-number="7.1" class="anchored" data-anchor-id="plot_link-estimated-link-function"><span class="header-section-number">7.1</span> <code>plot_link()</code>: Estimated Link Function</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_link</span>(fit,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">main =</span> <span class="st">&quot;Estimated link function g&quot;</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">col  =</span> <span class="st">&quot;blue&quot;</span>,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">lwd  =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_link</span>(fit,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">main =</span> <span class="st">&quot;Estimated link function g&quot;</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">col  =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">lwd  =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This plots <span class="math inline">\(\hat{g}(u)\)</span> against the single index <span class="math inline">\(\hat{\boldsymbol{\gamma}}^\top \mathbf{x}_i\)</span> for training observations.</p>
 </section>
 <section id="plot_survival-latency-survival-curves" class="level3" data-number="7.2">
 <h3 data-number="7.2" class="anchored" data-anchor-id="plot_survival-latency-survival-curves"><span class="header-section-number">7.2</span> <code>plot_survival()</code>: Latency Survival Curves</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_survival</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newZ         =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">group_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>),</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols         =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;blue&quot;</span>),</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">main         =</span> <span class="st">&quot;Estimated latency survival S_u(t|z)&quot;</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_survival</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newZ         =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">group_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols         =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;blue&quot;</span>),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">main         =</span> <span class="st">&quot;Estimated latency survival S_u(t|z)&quot;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="integrated-in-sic_fit" class="level3" data-number="7.3">
 <h3 data-number="7.3" class="anchored" data-anchor-id="integrated-in-sic_fit"><span class="header-section-number">7.3</span> Integrated in <code>sic_fit()</code></h3>
 <p>Both functions are called automatically with <code>plot = TRUE</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">plot        =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">plot_Z      =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">plot_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">plot        =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">plot_Z      =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">plot_labels =</span> <span class="fu">c</span>(<span class="st">&quot;Z = 0&quot;</span>, <span class="st">&quot;Z = 1&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
 <section id="predict" class="level2" data-number="8">
 <h2 data-number="8" class="anchored" data-anchor-id="predict"><span class="header-section-number">8</span> Predictions: <code>predict()</code></h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># New observations</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>X_new <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">5</span> <span class="sc">*</span> <span class="dv">4</span>), <span class="dv">5</span>, <span class="dv">4</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>Z_new <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rbinom</span>(<span class="dv">5</span>, <span class="dv">1</span>L, <span class="fl">0.6</span>), <span class="dv">5</span>, <span class="dv">1</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># All predictions</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit,</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">newX   =</span> X_new,</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">newZ   =</span> Z_new,</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">t_eval =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>),</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">type   =</span> <span class="st">&quot;all&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># New observations</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>X_new <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">5</span> <span class="sc">*</span> <span class="dv">4</span>), <span class="dv">5</span>, <span class="dv">4</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>Z_new <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rbinom</span>(<span class="dv">5</span>, <span class="dv">1</span>L, <span class="fl">0.6</span>), <span class="dv">5</span>, <span class="dv">1</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># All predictions</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">newX   =</span> X_new,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">newZ   =</span> Z_new,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">t_eval =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>),</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">type   =</span> <span class="st">&quot;all&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="components-of-pred" class="level3" data-number="8.1">
 <h3 data-number="8.1" class="anchored" data-anchor-id="components-of-pred"><span class="header-section-number">8.1</span> Components of <code>pred</code></h3>
 <table class="caption-top table">
@@ -3118,17 +3160,17 @@ Use summary(fit, se = &lt;this object&gt;) for p-values.</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display as table</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Patient   =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Index     =</span> <span class="fu">round</span>(pred<span class="sc">$</span>index, <span class="dv">4</span>),</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">p_x       =</span> <span class="fu">round</span>(pred<span class="sc">$</span>incidence, <span class="dv">4</span>),</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">S_t1      =</span> <span class="fu">round</span>(pred<span class="sc">$</span>survival[, <span class="dv">2</span>], <span class="dv">4</span>),</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">S_t5      =</span> <span class="fu">round</span>(pred<span class="sc">$</span>survival[, <span class="dv">4</span>], <span class="dv">4</span>)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tab) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Patient&quot;</span>,<span class="st">&quot;Index&quot;</span>,<span class="st">&quot;p(x)&quot;</span>,</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;S(t=1|x,z)&quot;</span>,<span class="st">&quot;S(t=5|x,z)&quot;</span>)</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tab)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display as table</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Patient   =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Index     =</span> <span class="fu">round</span>(pred<span class="sc">$</span>index, <span class="dv">4</span>),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">p_x       =</span> <span class="fu">round</span>(pred<span class="sc">$</span>incidence, <span class="dv">4</span>),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">S_t1      =</span> <span class="fu">round</span>(pred<span class="sc">$</span>survival[, <span class="dv">2</span>], <span class="dv">4</span>),</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">S_t5      =</span> <span class="fu">round</span>(pred<span class="sc">$</span>survival[, <span class="dv">4</span>], <span class="dv">4</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tab) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Patient&quot;</span>,<span class="st">&quot;Index&quot;</span>,<span class="st">&quot;p(x)&quot;</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;S(t=1|x,z)&quot;</span>,<span class="st">&quot;S(t=5|x,z)&quot;</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tab)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3152,40 +3194,40 @@ Use summary(fit, se = &lt;this object&gt;) for p-values.</code></pre>
 <section id="veridex" class="level2" data-number="9">
 <h2 data-number="9" class="anchored" data-anchor-id="veridex"><span class="header-section-number">9</span> Real Data Example: VERIDEX</h2>
 <p>This example reproduces the breast cancer application of <span class="citation" data-cites="amico2019">Amico, Van Keilegom and Legrand (<a href="#ref-amico2019" role="doc-biblioref">2019</a>)</span>. The dataset consists of 286 patients with lymph-node-negative breast cancer (<span class="citation" data-cites="wang2005"><span class="nocase">Wang et al.</span> (<a href="#ref-wang2005" role="doc-biblioref">2005</a>)</span>).</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SICoxCURE)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;VERIDEX-survival.txt&quot;</span>,</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PID&quot;</span>,<span class="st">&quot;GEO&quot;</span>,<span class="st">&quot;lymph&quot;</span>,<span class="st">&quot;time&quot;</span>,</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;status&quot;</span>,<span class="st">&quot;ER&quot;</span>,<span class="st">&quot;brain&quot;</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>ER_bin <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(dat<span class="sc">$</span>ER <span class="sc">==</span> <span class="st">&quot;ER+&quot;</span>)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Train/test split (2/3 - 1/3 )</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2019</span>)</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>idx   <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(dat), <span class="fu">floor</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span> <span class="sc">*</span> <span class="fu">nrow</span>(dat)))</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> dat[idx, ]</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>X_tr  <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(train[, <span class="st">&quot;ER_bin&quot;</span>, <span class="at">drop=</span><span class="cn">FALSE</span>])</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>Z_tr  <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(train[, <span class="st">&quot;ER_bin&quot;</span>, <span class="at">drop=</span><span class="cn">FALSE</span>])</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit SICoxCURE (B=250 )</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(</span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y           =</span> train<span class="sc">$</span>time,</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta       =</span> train<span class="sc">$</span>status,</span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">X           =</span> X_tr,</span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z           =</span> Z_tr,</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">h_step      =</span> <span class="fl">0.001</span>,</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">bootstrap   =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">B           =</span> <span class="dv">250</span>L,</span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">boot_seed   =</span> <span class="dv">2019</span>L,</span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot        =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_Z      =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_labels =</span> <span class="fu">c</span>(<span class="st">&quot;ER- (Z=0)&quot;</span>, <span class="st">&quot;ER+ (Z=1)&quot;</span>),</span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose     =</span> <span class="dv">1</span>L</span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary with p-values</span></span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SICoxCURE)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;VERIDEX-survival.txt&quot;</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PID&quot;</span>,<span class="st">&quot;GEO&quot;</span>,<span class="st">&quot;lymph&quot;</span>,<span class="st">&quot;time&quot;</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;status&quot;</span>,<span class="st">&quot;ER&quot;</span>,<span class="st">&quot;brain&quot;</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>ER_bin <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(dat<span class="sc">$</span>ER <span class="sc">==</span> <span class="st">&quot;ER+&quot;</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Train/test split (2/3 - 1/3 )</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2019</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>idx   <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(dat), <span class="fu">floor</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span> <span class="sc">*</span> <span class="fu">nrow</span>(dat)))</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> dat[idx, ]</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>X_tr  <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(train[, <span class="st">&quot;ER_bin&quot;</span>, <span class="at">drop=</span><span class="cn">FALSE</span>])</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>Z_tr  <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(train[, <span class="st">&quot;ER_bin&quot;</span>, <span class="at">drop=</span><span class="cn">FALSE</span>])</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit SICoxCURE (B=250 )</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y           =</span> train<span class="sc">$</span>time,</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta       =</span> train<span class="sc">$</span>status,</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">X           =</span> X_tr,</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z           =</span> Z_tr,</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">h_step      =</span> <span class="fl">0.001</span>,</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">bootstrap   =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">B           =</span> <span class="dv">250</span>L,</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">boot_seed   =</span> <span class="dv">2019</span>L,</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot        =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_Z      =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">1</span>),</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_labels =</span> <span class="fu">c</span>(<span class="st">&quot;ER- (Z=0)&quot;</span>, <span class="st">&quot;ER+ (Z=1)&quot;</span>),</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose     =</span> <span class="dv">1</span>L</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary with p-values</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Latency (beta):
           Estimate Std.Error z.value Pr(&gt;|z|)
 ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
@@ -3207,10 +3249,10 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 <p>The single-index <span class="math inline">\(\boldsymbol{x}^{\top}\boldsymbol{\gamma}\)</span> is invariant to any positive rescaling of <span class="math inline">\(\boldsymbol{\gamma}\)</span>: <span class="math inline">\(c\,\boldsymbol{\gamma}\)</span> gives the same index values as <span class="math inline">\(\boldsymbol{\gamma}\)</span> (after absorbing <span class="math inline">\(c\)</span> into <span class="math inline">\(g\)</span>). A constraint pins the scale, making the solution unique.</p>
 </div>
 </div>
-<section id="constraint-gamma1-default" class="level3" data-number="10.1">
-<h3 data-number="10.1" class="anchored" data-anchor-id="constraint-gamma1-default"><span class="header-section-number">10.1</span> <code>constraint = &quot;gamma1&quot;</code> (default)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">constraint =</span> <span class="st">&quot;gamma1&quot;</span>)  <span class="co"># default</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="constraint-gamma1" class="level3" data-number="10.1">
+<h3 data-number="10.1" class="anchored" data-anchor-id="constraint-gamma1"><span class="header-section-number">10.1</span> <code>constraint = &quot;gamma1&quot;</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">constraint =</span> <span class="st">&quot;gamma1&quot;</span>)  <span class="co"># default</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Fixes <span class="math inline">\(\gamma_1 = 1\)</span> (the first component is set to 1 or <span class="math inline">\(-1\)</span> depending on the sign of the unconstrained estimate). The remaining <span class="math inline">\(d - 1\)</span> components are estimated freely via <strong>BFGS</strong> optimization.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -3218,19 +3260,19 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Recommended for most users
+<span class="screen-reader-only">Tip</span>Computation time
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Fast, stable, and used by default. BFGS converges in ~10 EM iterations on the VERIDEX data. Bootstrap with <span class="math inline">\(B = 250\)</span> takes approximately <strong>2–3 minutes</strong> with <code>parallel = TRUE</code>.</p>
+<p>BFGS converges in ~10 EM iterations on the VERIDEX data. Bootstrap with <span class="math inline">\(B = 250\)</span> takes approximately <strong>2–3 minutes</strong> with <code>parallel = TRUE</code>.</p>
 </div>
 </div>
 </section>
-<section id="constraint-norm1" class="level3" data-number="10.2">
-<h3 data-number="10.2" class="anchored" data-anchor-id="constraint-norm1"><span class="header-section-number">10.2</span> <code>constraint = &quot;norm1&quot;</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">constraint =</span> <span class="st">&quot;norm1&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Constrains <span class="math inline">\(\|\boldsymbol{\gamma}\|_2 = 1\)</span> (unit Euclidean norm), as used in Amico, Van Keilegom &amp; Legrand (2019). All <span class="math inline">\(d\)</span> components are estimated simultaneously via <strong>SLSQP</strong> (sequential least-squares quadratic programming, implemented in <strong>nloptr</strong>) with convergence tolerances <code>xtol_rel = ftol_rel = 1e-8</code>.</p>
+<section id="constraint-norm1-default" class="level3" data-number="10.2">
+<h3 data-number="10.2" class="anchored" data-anchor-id="constraint-norm1-default"><span class="header-section-number">10.2</span> <code>constraint = &quot;norm1&quot;</code> (default)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">constraint =</span> <span class="st">&quot;norm1&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Constrains <span class="math inline">\(\|\boldsymbol{\gamma}\|_2 = 1\)</span> (unit Euclidean norm). All <span class="math inline">\(d\)</span> components are estimated simultaneously via <strong>SLSQP</strong> (sequential least-squares quadratic programming, implemented in <strong>nloptr</strong>) with convergence tolerances <code>xtol_rel = ftol_rel = 1e-8</code>.</p>
 <p>The optimizer works on the full <span class="math inline">\(\boldsymbol{\gamma}\)</span> vector subject to the norm-1 equality constraint, rather than reparametrizing it. This is more faithful to the original formulation but requires more EM iterations (~32 vs ~10 for <code>gamma1</code>) and is therefore slower.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -3243,19 +3285,19 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 </div>
 <div class="callout-body-container callout-body">
 <p>Because each bootstrap refit needs ~32 EM iterations instead of ~10, bootstrap is <strong>~5–6× slower</strong> under <code>norm1</code>. Always cap iterations with <code>max_iter_boot = 20L</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Integrated bootstrap</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">constraint    =</span> <span class="st">&quot;norm1&quot;</span>,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">bootstrap     =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">B             =</span> <span class="dv">250</span>L,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">boot_parallel =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">max_iter_boot =</span> <span class="dv">20</span>L)   <span class="co"># &lt;- essential ✅</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Or separate bootstrap after fitting</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit,</span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">B             =</span> <span class="dv">250</span>L,</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel      =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">max_iter_boot =</span> <span class="dv">20</span>L)   <span class="co"># &lt;- essential ✅</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Integrated bootstrap</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">constraint    =</span> <span class="st">&quot;norm1&quot;</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">bootstrap     =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">B             =</span> <span class="dv">250</span>L,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">boot_parallel =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">max_iter_boot =</span> <span class="dv">20</span>L)   <span class="co"># &lt;- essential ✅</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Or separate bootstrap after fitting</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit,</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">B             =</span> <span class="dv">250</span>L,</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel      =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">max_iter_boot =</span> <span class="dv">20</span>L)   <span class="co"># &lt;- essential ✅</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Expected computation times (B = 30, <code>parallel = TRUE</code>, n = 250):</strong></p>
 <table class="caption-top table">
 <thead>
@@ -3293,16 +3335,16 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 <li>The estimated link function <span class="math inline">\(\hat{g}\)</span> therefore differs (different support and smoothing).</li>
 <li>The predicted uncure probabilities <span class="math inline">\(\hat{p}(\mathbf{x})\)</span> are <strong>very highly correlated</strong> (<span class="math inline">\(r \approx 0.97\)</span>) but not identical (maximum absolute difference <span class="math inline">\(\approx 0.30\)</span> on extreme observations).</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit both constraints on the same data</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>fit_g1   <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">constraint =</span> <span class="st">&quot;gamma1&quot;</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>fit_norm1 <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">constraint =</span> <span class="st">&quot;norm1&quot;</span>)</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare predicted cure probabilities</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fit_g1<span class="sc">$</span>p_hat, fit_norm1<span class="sc">$</span>p_hat)</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; ~0.97  (very high, but not 1) ✅</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(fit_g1<span class="sc">$</span>p_hat <span class="sc">-</span> fit_norm1<span class="sc">$</span>p_hat)</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; roughly [-0.30, 0.30]  (differ on extremes)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit both constraints on the same data</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>fit_g1   <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">constraint =</span> <span class="st">&quot;gamma1&quot;</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>fit_norm1 <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">constraint =</span> <span class="st">&quot;norm1&quot;</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare predicted cure probabilities</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fit_g1<span class="sc">$</span>p_hat, fit_norm1<span class="sc">$</span>p_hat)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; ~0.97  (very high, but not 1) ✅</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(fit_g1<span class="sc">$</span>p_hat <span class="sc">-</span> fit_norm1<span class="sc">$</span>p_hat)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; roughly [-0.30, 0.30]  (differ on extremes)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3314,8 +3356,8 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><strong><code>gamma1</code></strong> (default): faster and numerically more stable; recommended for exploratory analysis and publication unless the article specifically requires <span class="math inline">\(\|\boldsymbol{\gamma}\|=1\)</span>.</li>
-<li><strong><code>norm1</code></strong>: matches the constraint in Amico, Van Keilegom &amp; Legrand (2019, <em>Biometrics</em>) exactly; use it for strict reproducibility of that paper’s results. Remember to set <code>max_iter_boot</code> when bootstrapping.</li>
+<li><p><strong><code>gamma1</code></strong>: faster (BFGS, ~10 EM iterations vs ~32 for <code>norm1</code>); useful for quick exploration.</p></li>
+<li><p><strong><code>norm1</code></strong> (default): more robust bootstrap SE, especially when the true <span class="math inline">\(\gamma_1\)</span> is small (&lt; 1), which can inflate SE of other coefficients under <code>gamma1</code>. Set <code>max_iter_boot = 20L</code> when bootstrapping.</p></li>
 </ul>
 </div>
 </div>
@@ -3339,20 +3381,20 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 <p>If <span class="math inline">\(h_{\mathrm{CV}} = h_{\min}\)</span> or <span class="math inline">\(h_{\mathrm{CV}} = h_{\max}\)</span>, the true optimum may lie outside the search interval. Extend <code>h_range</code> accordingly.</p>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick exploration (13 values)</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fit_fast  <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">h_step =</span> <span class="fl">0.05</span>)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Publication quality (601 values)</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>fit_final <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">h_step =</span> <span class="fl">0.001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick exploration (13 values)</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fit_fast  <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">h_step =</span> <span class="fl">0.05</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Publication quality (601 values)</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>fit_final <span class="ot">&lt;-</span> <span class="fu">sic_fit</span>(Y, delta, X, Z, <span class="at">h_step =</span> <span class="fl">0.001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="bootstrap-recommendations" class="level3" data-number="11.2">
 <h3 data-number="11.2" class="anchored" data-anchor-id="bootstrap-recommendations"><span class="header-section-number">11.2</span> Bootstrap recommendations</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exploration</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>se_quick <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">30</span>L, <span class="at">parallel =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Publication quality</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>se_final <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">250</span>L,</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">seed =</span> <span class="dv">42</span>L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exploration</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>se_quick <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">30</span>L, <span class="at">parallel =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Publication quality</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>se_final <span class="ot">&lt;-</span> <span class="fu">bootstrap_se</span>(fit, <span class="at">B =</span> <span class="dv">250</span>L,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">seed =</span> <span class="dv">42</span>L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
@@ -3478,13 +3520,13 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bibtex code-with-copy"><code class="sourceCode bibtex"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">SICoxCURE2026</span>,</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span>  = {{SICoxCURE}: Single-Index/Cox Mixture Cure Model},</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">author</span> = {Errahmani, Mohamed Yassir and Amico, Maïlis},</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">year</span>   = {2026},</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">note</span>   = {R package version 0.1.4},</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">url</span>    = {https://github.com/MohamedYassirErrahmani/SICoxCURE}</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bibtex code-with-copy"><code class="sourceCode bibtex"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">SICoxCURE2026</span>,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span>  = {{SICoxCURE}: Single-Index/Cox Mixture Cure Model},</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">author</span> = {Errahmani, Mohamed Yassir and Amico, Maïlis},</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">year</span>   = {2026},</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">note</span>   = {R package version 0.1.0},</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">url</span>    = {https://github.com/MohamedYassirErrahmani/SICoxCURE}</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
@@ -3500,18 +3542,18 @@ ER_bin     -0.9279    0.2753  -3.370  &lt;0.001 ***</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bibtex code-with-copy"><code class="sourceCode bibtex"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">amico2019</span>,</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span>   = {The single-index/{C}ox mixture cure model},</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">author</span>  = {Amico, Maïlis and</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>             Van Keilegom, Ingrid and</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>             Legrand, Catherine},</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">journal</span> = {Biometrics},</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">year</span>    = {2019},</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">volume</span>  = {75},</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">number</span>  = {2},</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">pages</span>   = {452--462},</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">doi</span>     = {10.1111/biom.12999}</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode bibtex code-with-copy"><code class="sourceCode bibtex"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">amico2019</span>,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span>   = {The single-index/{C}ox mixture cure model},</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">author</span>  = {Amico, Maïlis and</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>             Van Keilegom, Ingrid and</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>             Legrand, Catherine},</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">journal</span> = {Biometrics},</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">year</span>    = {2019},</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">volume</span>  = {75},</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">number</span>  = {2},</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">pages</span>   = {452--462},</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">doi</span>     = {10.1111/biom.12999}</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <hr>
