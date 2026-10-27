@@ -128,7 +128,7 @@ library(SICoxCURE)
 
 # Check version
 packageVersion("SICoxCURE")
-#> [1] '0.1.4'
+#> [1] '0.1.5'
 
 # List available functions
 ls("package:SICoxCURE")
@@ -220,9 +220,9 @@ fit <- sic_fit(
 | `data` | `NULL` | data.frame when using formula interface |
 | `Y`, `delta`, `X`, `Z` | `NULL` | Alternative to formula interface |
 | `kernel` | `"epanechnikov"` | Kernel function |
-| `h_range` | `c(0.4, 1.0)` | Bandwidth search interval |
+| `h_range` | `c(0.05, 5.0)` | Bandwidth search interval |
 | `h_step` | `0.001` | Grid step (601 values for fine accuracy) |
-| `constraint` | `"gamma1"` | Fix $\gamma_1 = 1$ |
+| `constraint` | `"norm1"` | Constrain $\|\boldsymbol{\gamma}\|_2 = 1$ |
 | `tol` | `1e-5` | EM convergence tolerance |
 | `max_iter` | `500L` | Maximum EM iterations |
 | `standardize_X` | `FALSE` | Standardize X before fitting |
@@ -368,7 +368,7 @@ Data:
 
 Model:
   Kernel: epanechnikov | h = 0.5500
-  Constraint: 'gamma1' | Standardized X: yes
+  Constraint: 'norm1' | Standardized X: yes
 
 Convergence: YES in 8 iterations (crit = 3.21e-06)
 
@@ -594,7 +594,7 @@ $\boldsymbol{\gamma}$ (after absorbing $c$ into $g$). A
 constraint pins the scale, making the solution unique.
 :::
 
-### `constraint = "gamma1"` (default)
+### `constraint = "gamma1"`
 
 ```r
 fit <- sic_fit(Y, delta, X, Z,
@@ -607,13 +607,13 @@ The remaining $d - 1$ components are estimated freely via
 **BFGS** optimization.
 
 ::: {.callout-tip}
-## Recommended for most users
-Fast, stable, and used by default. BFGS converges in ~10 EM
+## Computation time
+BFGS converges in ~10 EM
 iterations on the VERIDEX data. Bootstrap with $B = 250$
 takes approximately **2--3 minutes** with `parallel = TRUE`.
 :::
 
-### `constraint = "norm1"`
+### `constraint = "norm1"` (default)
 
 ```r
 fit <- sic_fit(Y, delta, X, Z,
@@ -621,7 +621,7 @@ fit <- sic_fit(Y, delta, X, Z,
 ```
 
 Constrains $\|\boldsymbol{\gamma}\|_2 = 1$ (unit Euclidean
-norm), as used in Amico, Van Keilegom & Legrand (2019).
+norm).
 All $d$ components are estimated simultaneously via
 **SLSQP** (sequential least-squares quadratic programming,
 implemented in **nloptr**) with convergence tolerances
@@ -698,13 +698,13 @@ range(fit_g1$p_hat - fit_norm1$p_hat)
 
 ::: {.callout-note}
 ## Which constraint to use?
-- **`gamma1`** (default): faster and numerically more stable;
-  recommended for exploratory analysis and publication unless
-  the article specifically requires $\|\boldsymbol{\gamma}\|=1$.
-- **`norm1`**: matches the constraint in
-  Amico, Van Keilegom & Legrand (2019, *Biometrics*) exactly;
-  use it for strict reproducibility of that paper's results.
-  Remember to set `max_iter_boot` when bootstrapping.
+- **`gamma1`**: faster (BFGS, ~10 EM iterations vs ~32 for `norm1`);
+  useful for quick exploration.
+
+- **`norm1`** (default): more robust bootstrap SE, especially when
+  the true $\gamma_1$ is small (< 1), which can inflate SE of other
+  coefficients under `gamma1`. Set `max_iter_boot = 20L` when bootstrapping.
+
 :::
 
 ---
@@ -785,7 +785,7 @@ the package and the original article:
   title  = {{SICoxCURE}: Single-Index/Cox Mixture Cure Model},
   author = {Errahmani, Mohamed Yassir and Amico, Maïlis},
   year   = {2026},
-  note   = {R package version 0.1.4},
+  note   = {R package version 0.1.5},
   url    = {https://github.com/MohamedYassirErrahmani/SICoxCURE}
 }
 ```
