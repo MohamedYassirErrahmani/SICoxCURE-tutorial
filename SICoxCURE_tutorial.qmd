@@ -128,7 +128,7 @@ library(SICoxCURE)
 
 # Check version
 packageVersion("SICoxCURE")
-#> [1] '0.1.5'
+#> [1] '0.1.0'
 
 # List available functions
 ls("package:SICoxCURE")
@@ -143,6 +143,44 @@ methods(class = "sic_fit")
 ---
 
 ## Data Preparation {#data}
+
+### Built-in dataset: `sicure_data` {#sicure-data}
+
+The package includes a simulated dataset `sicure_data` (n = 300) that can be used
+to test and explore the package functions immediately after installation.
+
+```{r}
+data(sicure_data)
+head(sicure_data)
+```
+
+::: {.callout-note}
+**Dataset structure:** 300 observations, 5 variables:
+
+- `FAILTIME`: observed follow-up time
+- `FAILCENS`: event indicator (1 = event, 0 = censored)
+- `TRT`: treatment indicator (0/1)
+- `SEX`: sex indicator (0/1)
+- `AGE`: age in years
+
+Generated from a SIC mixture cure model with `gamma = (0.8, -0.3, 0.015)`,
+`beta = -0.6`, event rate 23.3%, cure fraction ~18.7%, seed 2019.
+:::
+
+```{r}
+#| eval: false
+# Quick fit on built-in data
+fit_demo <- sic_fit(
+  Y             = sicure_data$FAILTIME,
+  delta         = sicure_data$FAILCENS,
+  X             = as.matrix(sicure_data[, c('TRT','SEX','AGE')]),
+  Z             = matrix(sicure_data$TRT, ncol = 1),
+  standardize_X = TRUE,
+  verbose       = 1L
+)
+print(fit_demo)
+```
+
 
 ### Required structure
 
@@ -785,7 +823,7 @@ the package and the original article:
   title  = {{SICoxCURE}: Single-Index/Cox Mixture Cure Model},
   author = {Errahmani, Mohamed Yassir and Amico, Maïlis},
   year   = {2026},
-  note   = {R package version 0.1.5},
+  note   = {R package version 0.1.0},
   url    = {https://github.com/MohamedYassirErrahmani/SICoxCURE}
 }
 ```
